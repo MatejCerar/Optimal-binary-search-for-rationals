@@ -1,0 +1,21 @@
+body {
+    padding: 20px;
+}
+
+ul {
+    columns: 4;
+    -webkit-columns: 4;
+    -moz-columns: 4;
+}
+
+li {
+    list-style-type: none;
+}
+
+.solution {
+    font-weight: bold;
+}
+
+.card {
+    margin-top: 20px;
+}
