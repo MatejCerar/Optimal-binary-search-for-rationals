@@ -259,35 +259,15 @@ def binary_search_for_fraction(lower,upper, x, M,i= None, seznam_vseh_intervalov
 # kjer p7q predstavlja ulomek ki ga iščemo v seznamu
 
 
-U = []
-    
 
 
-
-def find_fraction1(a, b, c, d):
-    """
-    Implementation of the algorithm described in Lemma 5 for finding a fraction in the interval [a/b, c/d].
-    """
-    if Fraction(a, b) >= Fraction(c, d):
-        raise ValueError("Invalid interval: [{}, {}]".format(Fraction(a, b), Fraction(c, d)))
-
-    if floor(a/b) == floor(c/d) and (a / b) % 1 != 0:  # Case 1: interval does not contain an integer
-        print(d, c % d, b, a % b)
-        new_b, new_a_prime = find_fraction1(d, c % d, b, a % b)
-        print(find_fraction1(d, c % d, b, a % b))
-        new_a = (floor(a/b) * new_b + new_a_prime)
-        return new_a, new_b
-    else:  # Case 2: interval contains an integer
-        return a // b, 1
-
-
-# def find_fraction(a,b,c,d,p,q):
-#     if floor(a/b) == floor(c/d) and (a/b) == floor(a/b):
-#         U.append((a/b),(c/d))
-#         print(U)
-#         find_fraction(d,c % d,b,a %b,p - floor(a/b)*q,q)
-#     else:
-#         return (ceil(a/b),1)
+def find_fraction(a,b,c,d,p,q):
+    if floor(a/b) == floor(c/d) and (a/b) == floor(a/b):
+        U.append((a/b),(c/d))
+        print(U)
+        find_fraction(d,c % d,b,a %b,p - floor(a/b)*q,q)
+    else:
+        return (ceil(a/b),1)
     
 
 
