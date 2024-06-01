@@ -1,8 +1,9 @@
-from flask import Flask, request, render_template_string
+from flask import Flask, request, render_template_string, url_for
 from math import floor, ceil, log
 import random
 import sys
 from fractions import Fraction
+
 
 
 app = Flask(__name__)
@@ -258,7 +259,7 @@ def binary_search_for_fraction(lower,upper, x, M,i= None, seznam_vseh_intervalov
 # Preostane nam samo še najti to število za to uporabimo postopek opisan v dokazu leme 5.
 # kjer p7q predstavlja ulomek ki ga iščemo v seznamu
 
-
+U =[]
 
 
 def find_fraction(a,b,c,d,p,q):
@@ -304,35 +305,8 @@ def najde_iskano_stevilko(x,M):
                                                                             najde_interval_za_rac_del(x,M)[1][1].numerator, najde_interval_za_rac_del(x,M)[1][1].denominator,M)
 
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/', methods=['GET'])
 def index():
-    if request.method == 'POST':
-        M = int(request.form['number'])
-        seznam = seznam_om(M)
-        return render_template_string('''
-            <!DOCTYPE html>
-            <html lang="en">
-            <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Generated List</title>
-                <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-                <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
-            </head>
-            <body>
-                <div class="container">
-                    <h1 class="text-center">Generated List</h1>
-                    <p>List: [{{ seznam|join(', ') }}]</p>
-                    <ul class="list-group">
-                    {% for num in seznam %}
-                        <li class="list-group-item"><a href="/number/{{ num }}">{{ num }}</a></li>
-                    {% endfor %}
-                    </ul>
-                    <a class="btn btn-primary mt-3" href="/">Go back</a>
-                </div>
-            </body>
-            </html>
-        ''', seznam=seznam)
     return render_template_string('''
         <!DOCTYPE html>
         <html lang="en">
@@ -346,7 +320,7 @@ def index():
         <body>
             <div class="container">
                 <h1 class="text-center">Enter a Number between 1 and 100</h1>
-                <form method="post" class="form-inline justify-content-center">
+                <form method="post" action="{{ url_for('generate') }}" class="form-inline justify-content-center">
                     <input type="number" class="form-control mb-2 mr-sm-2" name="number" min="1" max="100" required>
                     <button type="submit" class="btn btn-primary mb-2">Generate</button>
                 </form>
@@ -355,10 +329,46 @@ def index():
         </html>
     ''')
 
-@app.route('/number/<fraction>', methods=['GET'])
-def display_number(fraction):
-    M = 10 
-    x = float(Fraction(fraction))
+@app.route('/generate', methods=['POST'])
+def generate():
+    M = int(request.form['number'])
+    seznam = seznam_om(M)
+    return render_template_string('''
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Generated List</title>
+            <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+            <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
+        </head>
+        <body>
+            <div class="container">
+                <h1 class="text-center">Generated List</h1>
+                <p>List: [{{ seznam|join(', ') }}]</p>
+                <ul class="list-group">
+                {% for num in seznam %}
+                    <li class="list-group-item">
+                        <form method="post" action="{{ url_for('display_number') }}">
+                            <input type="hidden" name="fraction" value="{{ num }}">
+                            <button type="submit" class="btn btn-link">{{ num }}</button>
+                        </form>
+                    </li>
+                {% endfor %}
+                </ul>
+                <a class="btn btn-primary mt-3" href="/">Go back</a>
+            </div>
+        </body>
+        </html>
+    ''', seznam=seznam)
+
+@app.route('/display_number', methods=['POST'])
+def display_number():
+    fraction = request.form['fraction']
+    fraction = Fraction(fraction)
+    M = 10  # Example value for M; this should be passed appropriately
+    x = float(fraction)
     intervals1 = generiraj_vse_eks_sez_in_resitev(x, M)[0]
     solution1 = generiraj_vse_eks_sez_in_resitev(x, M)[1]
     intervals2 = gen_vse_sez_in_resi_za_celo_št_iskanje(x, M)[0]
@@ -417,3 +427,4 @@ def display_number(fraction):
 
 if __name__ == '__main__':
     app.run(debug=True)
+
