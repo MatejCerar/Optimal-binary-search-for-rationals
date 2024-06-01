@@ -357,7 +357,7 @@ def index():
 
 @app.route('/number/<fraction>', methods=['GET'])
 def display_number(fraction):
-    M = 10  # Example value for M; this should be passed appropriately
+    M = 10 
     x = float(Fraction(fraction))
     intervals1 = generiraj_vse_eks_sez_in_resitev(x, M)[0]
     solution1 = generiraj_vse_eks_sez_in_resitev(x, M)[1]
