@@ -247,36 +247,65 @@ def binary_search_for_fraction(lower,upper, x, M,i= None, seznam_vseh_intervalov
             i += 1
             #print(i)
             return binary_search_for_fraction(Fraction((lower+ upper)/2), Fraction(upper), x, M, i, seznam_vseh_intervalov)
-
-#iteracije ne delajo  ne vem zakaj       
-#Potrebno bo popraviti, da dejansko dobimo ulomek in ne racinalno število
-        
+  
 # Za vizualno predstavo bom vrjetno potreboval tudi vse vmesne intervala naprintat al pa celo vrnit, to bom videl ko bom tam
-        
+
+
+#zopet za najslabši primer tukaj gledamo le el seznamoa od 0 do 1, najslabše se bo vedel zadnji element v seznamu
+def worst_case_for_rationals(M):
+    Om_do_1 = []
+    for p in range(M):
+        for q in range(p,M):
+            Om_do_1.append(Fraction(p+1, q+1))
+    sez = quicksort(Om_do_1)
+    return binary_search_for_fraction(0,1, sez[-1], M)
+    
+    
 
 # torej našli smo interval velikosti [mi/(2m^2),mi+1/2m^2] za nek mi.
 # lema 4 nam pove da številka x v tem intervalu enolična. 
 # Preostane nam samo še najti to število za to uporabimo postopek opisan v dokazu leme 5.
-# kjer p7q predstavlja ulomek ki ga iščemo v seznamu
 
-U =[]
+    
+def find_fraction(a, b, c, d):
+    if floor(a/b) == floor(c/d) and (a / b) % 1 != 0:  # Case 1
+        b_, aa = find_fraction(d, c % d, b, a % b)
+        #print( b_, aa)
+        a_ = floor(a/b) * b_ + aa
+        return Fraction(a_, b_)
+    else:  # Case 2
+        return ceil(a/b), 1
+    
+#dela za vse razen za cela števila, vedno vrne le ena zato popravimo tako, da vidimo če iskanje ulomkov vodi di tega da c=d=1 vrni le celovštevilsko rešitev
 
-
-def find_fraction(a,b,c,d,p,q):
-    if floor(a/b) == floor(c/d) and (a/b) == floor(a/b):
-        U.append((a/b),(c/d))
-        print(U)
-        find_fraction(d,c % d,b,a %b,p - floor(a/b)*q,q)
-    else:
-        return (ceil(a/b),1)
     
 
 
 def easysolution (a,b,c,d, M):
     for k in range(M):
         for j in range(M):
-            if Fraction(a,b) <= (k+1)/(j+1) and  (k+1)/(j+1) <= Fraction(c,d):
-                return Fraction(k+1,j+1)
+            if Fraction(a,b) <= (k)/(j+1) and  (k)/(j+1) <= Fraction(c,d):
+                return Fraction(k,j+1)
+
+
+
+#Poglejmo nekaj najslabsih primerov za binarno iskanje celega števila:
+def graph_for_whole_nm_eorst_case(M):
+    sez = [0]
+    for i in range(1,M+1):
+        sez1 = [x for x in range(1,i+1)]
+        w = worst_case_for_int(sez1)[0]
+        if w != sez[-1]:
+            sez.append(worst_case_for_int(sez1)[0])
+    return sez
+
+def graph_for_rationa_nm_worst_case(M):
+    sez = [0]
+    for i in range(1,M+1):
+        w = worst_case_for_rationals(sez)[1]
+        if worst_case_for_rationals(sez)[1] != sez[-1]:
+            sez.append(worst_case_for_rationals(sez)[0])
+    return sez
 
 
 #igralec izbere M
@@ -284,25 +313,32 @@ def generiraj_seznam(M):
     return seznam_om(M)
 
 #igralec vzame x iz dobljenega seznama_om oblike Fraction(a,b) in M, ki ga je izbral že prej
+#Primer1 (Fraction(1,7), 10)
+#Primer2 (Fraction(4), 5)
 
-
-#prva vrne vse sezname, ki jih preiščemo, druga pa le rešitev
+#prva vrne vse sezname, ki jih preiščemo (vrne seznam seznamov npr [[0,1],[1,2],[2,4]]), druga pa le rešitev seznam npr [2,4]
 def generiraj_vse_eks_sez_in_resitev(x,M):
     return (integer_part_interval(x), integer_part_interval(x)[-1])
 
-#Prva pokaže celo bisekcijo, druga le rešitev
+#Prva pokaže celo bisekcijo (vrne seznam seznamov), druga le rešitev seznam v katerem rešitrv npr [0]
 def gen_vse_sez_in_resi_za_celo_št_iskanje(x,M):
     return (integer_part_solution_1(generiraj_vse_eks_sez_in_resitev(x,M)[-1],floor(x))[-1],integer_part_solution_1(generiraj_vse_eks_sez_in_resitev(x,M)[-1],floor(x))[-1][-1])
 
-#vrne vse intervale (torej interval vseh intervalo), zadnja le dvojec(ki predstavlja) interval prave velikosti prave velikosti
+#vrne vse intervale (torej interval vseh intervalov npr [[Fraction(0, 1), Fraction(1, 2)], [Fraction(0, 1), Fraction(1, 4)], [Fraction(1, 8), Fraction(1, 4)], [Fraction(1, 8), Fraction(3, 16)], 
+#                                                         [Fraction(1, 8), Fraction(5, 32)], [Fraction(9, 64), Fraction(5, 32)], [Fraction(9, 64), Fraction(19, 128)], 
+#                                                         [Fraction(9, 64), Fraction(37, 256)]]), 
+# zadnja vrne le dvojec(ki predstavlja) interval prave velikosti npr (Fraction(9, 64), Fraction(37, 256))
 def najde_interval_za_rac_del(x,M):
-    x = x - gen_vse_sez_in_resi_za_celo_št_iskanje(x,M)[-1][0]
     return (binary_search_for_fraction(gen_vse_sez_in_resi_za_celo_št_iskanje(x,M)[-1][0],  gen_vse_sez_in_resi_za_celo_št_iskanje(x,M)[-1][0] +1, x, M)[-1],
             binary_search_for_fraction(gen_vse_sez_in_resi_za_celo_št_iskanje(x,M)[-1][0],  gen_vse_sez_in_resi_za_celo_št_iskanje(x,M)[-1][0] +1, x, M)[0])
 
+#Vrne iskano število
 def najde_iskano_stevilko(x,M):
-    return gen_vse_sez_in_resi_za_celo_št_iskanje(x,M)[-1][0] + easysolution(najde_interval_za_rac_del(x,M)[1][0].numerator, najde_interval_za_rac_del(x,M)[1][0].denominator, 
-                                                                            najde_interval_za_rac_del(x,M)[1][1].numerator, najde_interval_za_rac_del(x,M)[1][1].denominator,M)
+    if najde_interval_za_rac_del(x,M)[-1][1].numerator == 1 and najde_interval_za_rac_del(x,M)[-1][1].denominator == 1 :
+        return gen_vse_sez_in_resi_za_celo_št_iskanje(x,M)[-1][0]
+    else:
+        return find_fraction(najde_interval_za_rac_del(x,M)[-1][0].numerator, najde_interval_za_rac_del(x,M)[-1][0].denominator, 
+                      najde_interval_za_rac_del(x,M)[-1][1].numerator, najde_interval_za_rac_del(x,M)[-1][1].denominator)
 
 
 @app.route('/', methods=['GET'])
@@ -324,6 +360,12 @@ def index():
                     <button type="submit" class="btn btn-primary mb-2">Generate</button>
                 </form>
             </div>
+            <div>      
+            <h4>
+                 Here one can try out the optimal algorihm for searching a rational number in the set of type p/q where p and q natural numbers of size at most your chosen number. 
+                 So firstly you choose any natural number. This will generate list as described above. Then you will choose any number from the generated set and the sloution for steps taken by algorithm will apear.
+            </h4>          
+            </div>
         </body>
         </html>
     ''')
@@ -342,24 +384,48 @@ def generate():
             <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
         </head>
         <body>
+            <h4>
+                 Choose any number from the list
+            </h4>   
             <div class="container">
                 <h1 class="text-center">Generated List</h1>
-                <p>List: [{{ seznam|join(', ') }}]</p>
-                <ul class="list-group">
-                {% for num in seznam %}
-                    <li class="list-group-item">
-                        <form method="post" action="{{ url_for('display_number') }}">
+                <p>List: [</p>
+                <div class="d-flex flex-wrap">
+                    {% for num in seznam %}
+                        <form method="post" action="{{ url_for('display_number') }}" class="mr-2 mb-2">
                             <input type="hidden" name="fraction" value="{{ num }}">
                             <button type="submit" class="btn btn-link">{{ num }}</button>
                         </form>
-                    </li>
-                {% endfor %}
-                </ul>
+                        {% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                </div>
+                <p>]</p>
                 <a class="btn btn-primary mt-3" href="/">Go back</a>
             </div>
         </body>
         </html>
     ''', seznam=seznam)
+
+
+
+        # TA DEL KODE JE ČE ŽELIM IMETI ELEMENTE SEZNAMA V VRSTICH ZA KLIKAT, TOREJ NAJPREJ LE NAPIŠE SEZNAM NATO PA ŠE V VSAKI VRSTICI ENA ŠTEVILKE ZA KLIKNIT, MENI LJUBŠA ZGORNJA VERZIJA
+        # <body>
+        #     <div class="container">
+        #         <h1 class="text-center">Generated List</h1>
+        #         <p>List: [{{ seznam|join(', ') }}]</p>
+        #         <ul class="list-group">
+        #         {% for num in seznam %}
+        #             <li class="list-group-item">
+        #                 <form method="post" action="{{ url_for('display_number') }}">
+        #                     <input type="hidden" name="fraction" value="{{ num }}">
+        #                     <button type="submit" class="btn btn-link">{{ num }}</button>
+        #                 </form>
+        #             </li>
+        #         {% endfor %}
+        #         </ul>
+        #         <a class="btn btn-primary mt-3" href="/">Go back</a>
+        #     </div>
+        # </body>
 
 @app.route('/display_number', methods=['POST'])
 def display_number():
@@ -389,28 +455,28 @@ def display_number():
                 <h1 class="text-center">Selected Number: {{ fraction }}</h1>
                 <div class="card">
                     <div class="card-body">
-                        <h2>First Solution</h2>
+                        <h2>Solution for exponential search</h2>
                         <p>Intervals: {{ intervals1 }}</p>
                         <p>Solution: <span class="solution">{{ solution1 }}</span></p>
                     </div>
                 </div>
                 <div class="card">
                     <div class="card-body">
-                        <h2>Second Solution</h2>
+                        <h2>Solution for optimal binary search for whole numbers</h2>
                         <p>Intervals: {{ intervals2 }}</p>
                         <p>Solution: <span class="solution">{{ solution2 }}</span></p>
                     </div>
                 </div>
                 <div class="card">
                     <div class="card-body">
-                        <h2>Third Solution</h2>
+                        <h2>Solution for the interva containig exactly one number from list</h2>
                         <p>Intervals: {{ interval3 }}</p>
                         <p>Solution: <span class="solution">{{ solution3 }}</span></p>
                     </div>
                 </div>
                 <div class="card">
                     <div class="card-body">
-                        <h2>Final Solution</h2>
+                        <h2>Your chosen number</h2>
                         <p><span class="solution">{{ final_solution }}</span></p>
                     </div>
                 </div>
