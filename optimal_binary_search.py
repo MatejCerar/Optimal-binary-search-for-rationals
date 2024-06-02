@@ -270,9 +270,9 @@ def whole_nm_eorst_case(M):
 def rationa_nm_worst_case(M):
     sez = [0]
     for i in range(1,M+1):
-        w = worst_case_for_rationals(sez)[1]
-        if worst_case_for_rationals(sez)[1] != sez[-1]:
-            sez.append(worst_case_for_rationals(sez)[0])
+        w = worst_case_for_rationals(i)[1]
+        if w != sez[-1]:
+            sez.append(worst_case_for_rationals(i)[1])
     return sez
 
 
