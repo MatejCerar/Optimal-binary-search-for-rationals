@@ -68,40 +68,10 @@ R = [x for x in range(1,100000+1)]
 
 S = [x for x in range(1,1000000+1)]
 
-Š = [x for x in range(1,10000000+1)]
-
-#T = [x for x in range(1,100000000+1)]
-
-# U = [x for x in range(1,1000000000+1)] # to je 10^9
-
-# V = [x for x in range(1,10000000000+1)]
-
-# Z = [x for x in range(1,100000000000+1)]
-
-# Ž = [x for x in range(1,1000000000000+1)] # to je 10^12
-
-#ŽŽ = [x for x in range(1,10000000000000+1)] # to je 10^13
-
-
-
-
-
 #Oo = seznam_om(1000)
 
 
 
-#Najprej predstavimo optimalno dvojiško iskanje za celo številske sezname
-
-
-# def integer_part_pobiranje_iz_sez(sez):
-   
-
-# def integer_part_interval (n):
-#     for i in range(10):
-#         if n < 2**i:
-#             return [2**(i-1),2**i]
-#         else:
-#             pass
 
 
 #ta funkcija vzame seznam generiran od integer_part_interval npr [4,8] in naredi seznam [4,5,6,7,8]
@@ -109,7 +79,10 @@ def generiraj_seznam_od_do(sez):
     return [x for x in range(sez[0],sez[1]+1)]
 
 
-#ni še vredu popravi, dela za vse razen za potence 2, da dejansk [16,16], n je lahko racionalno število vzamem le floor
+
+
+#Najprej predstavimo optimalno dvojiško iskanje za celo številske sezname
+
 def integer_part_interval(n):
     if n < 1:
         return ([[0,1]])
@@ -120,17 +93,16 @@ def integer_part_interval(n):
             seznam.append(generiraj_seznam_od_do([i,2*i]))
             i = 2*i
         return seznam
-    # return [x for x in range(2 ** (floor(log(floor(n))/log(2))),2**(ceil(log(floor(n))/log(2))))]
-
+   
 
 
       
 
-#to imenujemo binry search for integer in a list, vrne nam kolikokrat smovprašali ali je za večje ali manjše, če ejdemo število se ustavi ali ko ostane le ena številka
+#Naslednjo funkcijo imenujemo binary search for integer in a list, vrne nam kolikokrat smo vprašali ali je naša številka večje ali manjše, če najdemo število se ustavi ali ko ostane le ena številka
 
 
-#Pazi, če smo z eksponentim iskanjem dobili interval dolžine 1, to funkcija nepotrbna sea imamo rešitev
-#to imenujemo binry search for integer in a list, vrne nam kolikokrat smovprašali ali je za večje ali manjše, če ejdemo število se ustavi ali ko ostane le ena številka
+#Pazi, če smo z eksponentim iskanjem dobili interval dolžine 1, to funkcija nepotrebna saj imamo rešitev
+
 #za n vzamemo celo število zato vzemimo floor od izbranega x 
 
 
@@ -170,16 +142,13 @@ def integer_part_solution_1(sez,n,i = None, sez_vseh_intervalov = None):
         
     else:
         sez2 = sez[:sez.index(floor((max+min)/2)+1)]
-        #tukaj vzamemo le prvo polovico lahko izločimo število, ki smo ga ugibali torej manj kot polovica, problem je če izberemo številko 0, ki ni vse znamu
-        #bomo po korakih iteracije dobili [1,2], ugibamo da je številka 1 ampak to ni prav, zato vzamemo [], ker seznam prazeb se funkcija zruši.
-        # Dve možni rešitvi lahko dodamo v seznam številko ki smo jo ugibali npr [1]( to naredimo tako: sez2 = sez[:sez.index(floor((max+min)/2)+1)]), 
-        # Ali pa že tukaj preverimo ali je seznam prazen
-
         #print("Vzeli smo prvo polovico", sez2)
         sez_vseh_intervalov.append(sez2)
         i += 1
         #print("število iteracij", i)
         return integer_part_solution_1(sez2,n,i,sez_vseh_intervalov)
+    
+
 # Primer
 # M = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 # n = 2
@@ -218,6 +187,8 @@ def worst_case_for_int(sez):
 # lower je našeni spodnji del, upper je naš zgornji del, x je točna številka iz Om ki jo ma odgovorjalec v mislih, M je omejitev Om z i štejmo korake iteracije, sez_vseh_intervalov
 #binary_search_for_fraction(0,1,Fraction(1,81),100)
 #dodaj še da izpisuje sezname, bi mogl bit čist lahko
+
+
 def binary_search_for_fraction(lower,upper, x, M,i= None, seznam_vseh_intervalov = None):
     if i is None:
         i = 0
@@ -251,7 +222,7 @@ def binary_search_for_fraction(lower,upper, x, M,i= None, seznam_vseh_intervalov
 # Za vizualno predstavo bom vrjetno potreboval tudi vse vmesne intervala naprintat al pa celo vrnit, to bom videl ko bom tam
 
 
-#zopet za najslabši primer tukaj gledamo le el seznamoa od 0 do 1, najslabše se bo vedel zadnji element v seznamu
+#zopet za najslabši primer tukaj gledamo le elemente iz seznam od 0 do 1, najslabše se bo vedel zadnji element v seznamu
 def worst_case_for_rationals(M):
     Om_do_1 = []
     for p in range(M):
@@ -275,10 +246,7 @@ def find_fraction(a, b, c, d):
         return Fraction(a_, b_)
     else:  # Case 2
         return ceil(a/b), 1
-    
-#dela za vse razen za cela števila, vedno vrne le ena zato popravimo tako, da vidimo če iskanje ulomkov vodi di tega da c=d=1 vrni le celovštevilsko rešitev
 
-    
 
 
 def easysolution (a,b,c,d, M):
@@ -290,7 +258,7 @@ def easysolution (a,b,c,d, M):
 
 
 #Poglejmo nekaj najslabsih primerov za binarno iskanje celega števila:
-def graph_for_whole_nm_eorst_case(M):
+def whole_nm_eorst_case(M):
     sez = [0]
     for i in range(1,M+1):
         sez1 = [x for x in range(1,i+1)]
@@ -299,13 +267,18 @@ def graph_for_whole_nm_eorst_case(M):
             sez.append(worst_case_for_int(sez1)[0])
     return sez
 
-def graph_for_rationa_nm_worst_case(M):
+def rationa_nm_worst_case(M):
     sez = [0]
     for i in range(1,M+1):
         w = worst_case_for_rationals(sez)[1]
         if worst_case_for_rationals(sez)[1] != sez[-1]:
             sez.append(worst_case_for_rationals(sez)[0])
     return sez
+
+
+
+
+#VSE FUNKCIJE SKUPAJ
 
 
 #igralec izbere M
@@ -349,7 +322,7 @@ def index():
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Enter a Number</title>
+            <title>Optimal search for rationals</title>
             <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
         </head>
         <body>
@@ -447,7 +420,7 @@ def display_number():
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Selected Number</title>
+            <title>Optimal search for rationals</title>
             <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
         </head>
         <body>
