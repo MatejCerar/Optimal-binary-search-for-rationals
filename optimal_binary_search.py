@@ -315,7 +315,6 @@ def index():
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Enter a Number</title>
             <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-            <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
         </head>
         <body>
             <div class="container">
@@ -341,7 +340,6 @@ def generate():
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Generated List</title>
             <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-            <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
         </head>
         <body>
             <div class="container">
@@ -367,7 +365,7 @@ def generate():
 def display_number():
     fraction = request.form['fraction']
     fraction = Fraction(fraction)
-    M = 10  # Example value for M; this should be passed appropriately
+    M = 10  
     x = float(fraction)
     intervals1 = generiraj_vse_eks_sez_in_resitev(x, M)[0]
     solution1 = generiraj_vse_eks_sez_in_resitev(x, M)[1]
@@ -385,7 +383,6 @@ def display_number():
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Selected Number</title>
             <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-            <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
         </head>
         <body>
             <div class="container">
