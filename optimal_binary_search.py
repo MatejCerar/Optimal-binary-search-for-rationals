@@ -258,7 +258,7 @@ def easysolution (a,b,c,d, M):
 
 
 #Poglejmo nekaj najslabsih primerov za binarno iskanje celega števila:
-def whole_nm_eorst_case(M):
+def integers_nm_worst_case(M):
     sez = [0]
     for i in range(1,M+1):
         sez1 = [x for x in range(1,i+1)]
@@ -367,6 +367,7 @@ def generate():
                     {% for num in seznam %}
                         <form method="post" action="{{ url_for('display_number') }}" class="mr-2 mb-2">
                             <input type="hidden" name="fraction" value="{{ num }}">
+                            <input type="hidden" name="M" value="{{ M }}">
                             <button type="submit" class="btn btn-link">{{ num }}</button>
                         </form>
                         {% if not loop.last %}, {% endif %}
@@ -377,7 +378,7 @@ def generate():
             </div>
         </body>
         </html>
-    ''', seznam=seznam)
+    ''', seznam=seznam, M=M)
 
 
 
@@ -403,8 +404,8 @@ def generate():
 @app.route('/display_number', methods=['POST'])
 def display_number():
     fraction = request.form['fraction']
-    fraction = Fraction(fraction)
-    M = 10  
+    fraction = Fraction(fraction)  
+    M = int(request.form['M'])
     x = float(fraction)
     intervals1 = generiraj_vse_eks_sez_in_resitev(x, M)[0]
     solution1 = generiraj_vse_eks_sez_in_resitev(x, M)[1]
@@ -435,7 +436,7 @@ def display_number():
                 </div>
                 <div class="card">
                     <div class="card-body">
-                        <h2>Solution for optimal binary search for whole numbers</h2>
+                        <h2>Solution for optimal binary search for integers</h2>
                         <p>Intervals: {{ intervals2 }}</p>
                         <p>Solution: <span class="solution">{{ solution2 }}</span></p>
                     </div>
